@@ -46,17 +46,19 @@ insert into public.rooms(id, organization_id, name, type) values
   ('00000000-0000-4000-8000-000000000402', '00000000-0000-4000-8000-000000000001', 'Sala Demo 2', 'sala')
 on conflict (id) do nothing;
 
-insert into public.time_slots(id, organization_id, day_of_week, period_index, start_time, end_time)
+insert into public.time_slots(id, organization_id, day_of_week, period_index, start_time, end_time, shift, slot_type)
 select
   ('00000000-0000-4000-8000-' || lpad((500 + day * 10 + period)::text, 12, '0'))::uuid,
   '00000000-0000-4000-8000-000000000001',
   day,
   period,
   (time '07:00' + ((period - 1) * interval '50 minutes'))::time,
-  (time '07:00' + (period * interval '50 minutes'))::time
+  (time '07:00' + (period * interval '50 minutes'))::time,
+  'manha',
+  case when period = 3 then 'intervalo' else 'aula' end
 from generate_series(1, 5) as day
 cross join generate_series(1, 5) as period
-on conflict (organization_id, day_of_week, period_index) do nothing;
+on conflict (organization_id, shift, day_of_week, period_index) do nothing;
 
 insert into public.teacher_availability(organization_id, teacher_id, time_slot_id, available)
 select
@@ -74,3 +76,15 @@ insert into public.teaching_assignments(id, organization_id, teacher_id, subject
   ('00000000-0000-4000-8000-000000000602', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000202', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000301', 4, '00000000-0000-4000-8000-000000000401', 'separadas'),
   ('00000000-0000-4000-8000-000000000603', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000203', '00000000-0000-4000-8000-000000000103', '00000000-0000-4000-8000-000000000302', 3, '00000000-0000-4000-8000-000000000402', 'geminadas')
 on conflict (id) do nothing;
+
+insert into public.teacher_subject_loads(organization_id, teacher_id, subject_id, weekly_hours) values
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000201', '00000000-0000-4000-8000-000000000101', 4),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000202', '00000000-0000-4000-8000-000000000102', 4),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000203', '00000000-0000-4000-8000-000000000103', 3)
+on conflict (organization_id, teacher_id, subject_id) do nothing;
+
+insert into public.class_subject_requirements(organization_id, class_id, subject_id, weekly_hours) values
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000301', '00000000-0000-4000-8000-000000000101', 4),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000301', '00000000-0000-4000-8000-000000000102', 4),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000302', '00000000-0000-4000-8000-000000000103', 3)
+on conflict (organization_id, class_id, subject_id) do nothing;

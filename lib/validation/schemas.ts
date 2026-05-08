@@ -29,6 +29,8 @@ export const timeSlotSchema = z.object({
   period_index: z.coerce.number().int().min(1).max(12),
   start_time: z.string().regex(/^\d{2}:\d{2}$/),
   end_time: z.string().regex(/^\d{2}:\d{2}$/),
+  shift: z.enum(["manha", "tarde"]).default("manha"),
+  slot_type: z.enum(["aula", "intervalo"]).default("aula"),
 });
 
 export const assignmentSchema = z.object({
@@ -44,9 +46,23 @@ export const createJobSchema = z.object({
   timeout_seconds: z.coerce.number().int().min(1).max(900).default(120),
 });
 
+export const teacherSubjectLoadSchema = z.object({
+  teacher_id: uuid,
+  subject_id: uuid,
+  weekly_hours: z.coerce.number().int().min(1).max(40),
+});
+
+export const classSubjectRequirementSchema = z.object({
+  class_id: uuid,
+  subject_id: uuid,
+  weekly_hours: z.coerce.number().int().min(1).max(40),
+});
+
 export type TeacherInput = z.infer<typeof teacherSchema>;
 export type SubjectInput = z.infer<typeof subjectSchema>;
 export type ClassInput = z.infer<typeof classSchema>;
 export type RoomInput = z.infer<typeof roomSchema>;
 export type TimeSlotInput = z.infer<typeof timeSlotSchema>;
 export type AssignmentInput = z.infer<typeof assignmentSchema>;
+export type TeacherSubjectLoadInput = z.infer<typeof teacherSubjectLoadSchema>;
+export type ClassSubjectRequirementInput = z.infer<typeof classSubjectRequirementSchema>;

@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { CalendarDays, ClipboardList, LayoutDashboard, School, Settings, Users } from "lucide-react";
+import { BookOpen, CalendarDays, ClipboardList, LayoutDashboard, School, Settings, Users } from "lucide-react";
 import type { Organization } from "@/lib/types";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/cadastros/professores", label: "Cadastros", icon: Users },
+  { href: "/planejamento/matriz-curricular", label: "Planejamento", icon: BookOpen },
   { href: "/disponibilidade", label: "Disponibilidade", icon: CalendarDays },
   { href: "/atribuicoes", label: "Atribuicoes", icon: ClipboardList },
   { href: "/gerar", label: "Gerar horario", icon: Settings },

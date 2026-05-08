@@ -37,7 +37,7 @@ export async function buildSolverSnapshot(organizationId: string, timeoutSeconds
     subjects: subjects.data ?? [],
     classes: classes.data ?? [],
     rooms: rooms.data ?? [],
-    timeSlots: timeSlots.data ?? [],
+    timeSlots: (timeSlots.data ?? []).filter((slot) => (slot.slot_type ?? "aula") === "aula"),
     availability: availability.data ?? [],
     assignments: assignments.data ?? [],
     options: {

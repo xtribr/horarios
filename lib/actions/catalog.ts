@@ -6,9 +6,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireCurrentOrganization, requireUser } from "@/lib/tenant/current";
 import {
   assignmentSchema,
+  classSubjectRequirementSchema,
   classSchema,
   roomSchema,
   subjectSchema,
+  teacherSubjectLoadSchema,
   teacherSchema,
   timeSlotSchema,
 } from "@/lib/validation/schemas";
@@ -114,6 +116,30 @@ export async function createAssignmentAction(formData: FormData) {
   revalidatePath("/atribuicoes");
 }
 
+export async function createTeacherSubjectLoadAction(formData: FormData) {
+  const organization = await requireCurrentOrganization();
+  const parsed = teacherSubjectLoadSchema.parse(formToObject(formData));
+  const supabase = await createSupabaseServerClient();
+  await supabase.from("teacher_subject_loads").upsert({
+    ...parsed,
+    organization_id: organization.id,
+  }, { onConflict: "organization_id,teacher_id,subject_id" });
+  revalidatePath("/planejamento/carga-docente");
+  revalidatePath("/gerar");
+}
+
+export async function createClassSubjectRequirementAction(formData: FormData) {
+  const organization = await requireCurrentOrganization();
+  const parsed = classSubjectRequirementSchema.parse(formToObject(formData));
+  const supabase = await createSupabaseServerClient();
+  await supabase.from("class_subject_requirements").upsert({
+    ...parsed,
+    organization_id: organization.id,
+  }, { onConflict: "organization_id,class_id,subject_id" });
+  revalidatePath("/planejamento/matriz-curricular");
+  revalidatePath("/gerar");
+}
+
 export async function upsertAvailabilityAction(formData: FormData) {
   const organization = await requireCurrentOrganization();
   await requireUser();
@@ -143,7 +169,7 @@ export async function upsertAvailabilityAction(formData: FormData) {
 }
 
 export async function deleteRowAction(table: string, id: string, path: string) {
-  const allowed = new Set(["teachers", "subjects", "classes", "rooms", "time_slots", "teaching_assignments"]);
+  const allowed = new Set(["teachers", "subjects", "classes", "rooms", "time_slots", "teaching_assignments", "teacher_subject_loads", "class_subject_requirements"]);
   if (!allowed.has(table)) throw new Error("Tabela nao permitida.");
 
   const supabase = await createSupabaseServerClient();

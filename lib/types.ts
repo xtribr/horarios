@@ -43,6 +43,8 @@ export type TimeSlot = {
   period_index: number;
   start_time: string;
   end_time: string;
+  shift?: "manha" | "tarde";
+  slot_type?: "aula" | "intervalo";
 };
 
 export type TeacherAvailability = {
@@ -62,6 +64,22 @@ export type TeachingAssignment = {
   weekly_hours: number;
   room_id_preferred: string | null;
   grouping_rule: GroupingRule;
+};
+
+export type TeacherSubjectLoad = {
+  id: string;
+  organization_id: string;
+  teacher_id: string;
+  subject_id: string;
+  weekly_hours: number;
+};
+
+export type ClassSubjectRequirement = {
+  id: string;
+  organization_id: string;
+  class_id: string;
+  subject_id: string;
+  weekly_hours: number;
 };
 
 export type ScheduleEntry = {
