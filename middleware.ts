@@ -1,8 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { AUTH_BYPASS_ENABLED } from "@/lib/auth-bypass";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
+  if (AUTH_BYPASS_ENABLED) {
+    return response;
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:55321",

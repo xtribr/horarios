@@ -3,6 +3,27 @@ insert into public.organizations(id, name)
 values ('00000000-0000-4000-8000-000000000001', 'Escola Demonstracao Ficticia')
 on conflict (id) do nothing;
 
+insert into auth.users(id, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, aud, role)
+values (
+  '00000000-0000-4000-8000-000000000099',
+  'dev-bypass@example.invalid',
+  crypt('dev-bypass-nao-usar-em-producao', gen_salt('bf')),
+  now(),
+  '{"provider":"email","providers":["email"]}'::jsonb,
+  '{}'::jsonb,
+  'authenticated',
+  'authenticated'
+)
+on conflict (id) do nothing;
+
+insert into public.profiles(user_id, name)
+values ('00000000-0000-4000-8000-000000000099', 'Usuario Dev Bypass')
+on conflict (user_id) do nothing;
+
+insert into public.memberships(organization_id, user_id, role)
+values ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000099', 'owner')
+on conflict (organization_id, user_id) do nothing;
+
 insert into public.subjects(id, organization_id, name, color) values
   ('00000000-0000-4000-8000-000000000101', '00000000-0000-4000-8000-000000000001', 'Matematica', '#2563eb'),
   ('00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000001', 'Lingua Portuguesa', '#16a34a'),

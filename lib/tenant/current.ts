@@ -1,8 +1,16 @@
 import { redirect } from "next/navigation";
+import { AUTH_BYPASS_ENABLED, DEMO_ORGANIZATION, DEMO_USER_ID } from "@/lib/auth-bypass";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Organization } from "@/lib/types";
 
 export async function getCurrentUser() {
+  if (AUTH_BYPASS_ENABLED) {
+    return {
+      id: DEMO_USER_ID,
+      email: "dev-bypass@example.invalid",
+    };
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getUser();
 
@@ -24,6 +32,10 @@ export async function requireUser() {
 }
 
 export async function getCurrentOrganization(): Promise<Organization | null> {
+  if (AUTH_BYPASS_ENABLED) {
+    return DEMO_ORGANIZATION;
+  }
+
   const supabase = await createSupabaseServerClient();
   const user = await getCurrentUser();
 

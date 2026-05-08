@@ -20,9 +20,13 @@ Crie `.env.local` com:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:55321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<ANON_KEY do supabase status -o env>
+SUPABASE_SERVICE_ROLE_KEY=<SERVICE_ROLE_KEY do supabase status -o env>
+AUTH_BYPASS=true
 ```
 
 As portas Supabase foram deslocadas para `5532x` para evitar conflito com outros projetos locais.
+
+`AUTH_BYPASS=true` deve ser usado apenas em desenvolvimento local. Ele ignora login nas rotas protegidas e usa a organizacao ficticia do seed com service-role no servidor para nao travar testes manuais.
 
 ## Comandos
 
