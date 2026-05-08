@@ -35,9 +35,14 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
           <h1 className="text-2xl font-semibold">{schedule.name}</h1>
           <p className="mt-1 text-sm text-slate-500">Conflitos hard: {schedule.hard_conflicts} · score: {schedule.soft_score ?? "-"}</p>
         </div>
-        <Link href={`/api/schedules/${id}/export?format=excel`}>
-          <Button variant="secondary">Exportar Excel</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href={`/api/schedules/${id}/export?format=pdf`}>
+            <Button variant="secondary">Exportar PDF</Button>
+          </Link>
+          <Link href={`/api/schedules/${id}/export?format=excel`}>
+            <Button variant="secondary">Exportar Excel</Button>
+          </Link>
+        </div>
       </div>
       {snapshot ? (
         <ScheduleGrid
