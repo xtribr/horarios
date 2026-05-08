@@ -8,11 +8,12 @@ export interface SolverAdapter {
 
 export class PythonOrToolsSolverAdapter implements SolverAdapter {
   async solve(input: SolverInput): Promise<SolverResult> {
-    const solverPath = path.join(process.cwd(), "solver", "montar_horario_solver", "cli.py");
+    const solverCwd = path.join(process.cwd(), "solver");
     const startedAt = Date.now();
 
     return new Promise((resolve, reject) => {
-      const child = spawn("python3", [solverPath], {
+      const child = spawn("python3", ["-m", "montar_horario_solver.cli"], {
+        cwd: solverCwd,
         stdio: ["pipe", "pipe", "pipe"],
       });
 
